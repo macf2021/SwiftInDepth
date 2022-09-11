@@ -1,6 +1,10 @@
 //  StringTreeWithRemove.swift
 //  Copyright © 2015 Allen Holub. All rights reserved.
 
+/* Allen Holub's Pluralsite Swift 2.x code Sept 2015 converted to Swift 5.1 by hand
+ * by Michael MacFaden Sept 2022.
+ */
+
 import Foundation
 
 class StringTreeWithRemove
@@ -12,24 +16,25 @@ class StringTreeWithRemove
     var  count:  Int  { return size }
 
 
-    //----------------------------------------------------------------------
     var  isEmpty: Bool { return root == nil; }
-    //----------------------------------------------------------------------
+
     func clear() {
         root = nil
         size = 0
     }
+    
     //----------------------------------------------------------------------
     // Initialize from an array. e.g.
     // var t = StringTree( ["a", "b", "c"] )
     //
     init ( _ elements: [T] )
     {   for element in elements {
-            add(element)
+        _ = add(element: element)
         }
     }
 
     init (){} // nothing to do, but it's shadowed by [T] version
+    
     //----------------------------------------------------------------------
     /// Add a new element. Return false (and do nothing) if the element
     /// is already there
@@ -40,8 +45,7 @@ class StringTreeWithRemove
         }
         else {
             var current = root!;
-            for ;;
-            {
+            while true {
                 if element > current.element { // go right
                     if current.rightChild == nil {
                         current.rightChild = Node(element)
@@ -65,7 +69,7 @@ class StringTreeWithRemove
                 }
             }
         }
-        ++size
+        size += 1
         return true
     }
 
@@ -74,18 +78,18 @@ class StringTreeWithRemove
     
     func remove( lookingFor: T ) -> T? {
         
-        if let (target, parent) = doFind(lookingFor, current:root, parent:nil) {
+        if let (target, parent) = doFind(lookingFor: lookingFor, current:root, parent:nil) {
             
             let orphanedSubtree = target.leftChild
-            let targetSide      = target.isOnSideOf(parent)
+            let targetSide      = target.isOnSideOf(parent: parent)
             
             if( target.rightChild == nil ) {
-                replaceChildOf( parent, on: targetSide, with: orphanedSubtree );
+                replaceChildOf(parent: parent, on: targetSide, with: orphanedSubtree );
             } else {
-                target.rightChild!.fillFirstAvailableSlotOn(.Left, with: orphanedSubtree)
-                replaceChildOf( parent, on: targetSide, with: target.rightChild );
+                target.rightChild!.fillFirstAvailableSlotOn(inThisDirection: .Left, with: orphanedSubtree)
+                replaceChildOf(parent: parent, on: targetSide, with: target.rightChild );
             }
-            --size
+            size -= 1
             return target.element
         }
         return nil;
@@ -104,7 +108,7 @@ class StringTreeWithRemove
             parent!.rightChild = with
         }
     }
-    //----------------------------------------------------------------------
+    
     func smallest() -> T? {
         var current = root
         while  current?.leftChild != nil {
@@ -112,7 +116,7 @@ class StringTreeWithRemove
         }
         return current?.element
     }
-    //----------------------------------------------------------------------
+
     func largest() -> T? {
         var current = root
         while  current?.rightChild != nil {
@@ -120,21 +124,23 @@ class StringTreeWithRemove
         }
         return current?.element
     }
+    
     //----------------------------------------------------------------------
     /// Return the element that matches (==) lookingFor or nil if you can't find it.
     /// Returns a tuple holding optional references to both the
     /// found node and its parent (see doFind()).
     
     func findMatchOf( lookingFor: T ) -> T? {
-        if let (found, _) = doFind(lookingFor, current:root, parent:nil) {
+        if let (found, _) = doFind(lookingFor: lookingFor, current:root, parent:nil) {
             return found.element
         }
         return nil
     }
     
     func contains( lookingFor: T ) -> Bool {
-        return findMatchOf( lookingFor ) != nil
+        return findMatchOf(lookingFor: lookingFor ) != nil
     }
+    
     //----------------------------------------------------------------------
     /// The workhorse method used by both findMatchOf and remove.
     /// When you find something, all you need is the node you're looking for, but when you're
@@ -143,11 +149,10 @@ class StringTreeWithRemove
     /// a reference to the current node and also a reference to an optional parent node. The latter
     /// is nil when found item is the root node.
     ///
-    func doFind( lookingFor: T, current: Node?, parent: Node? ) -> (found: Node, parent: Node?)?
-    {
+    func doFind( lookingFor: T, current: Node?, parent: Node? ) -> (found: Node, parent: Node?)? {
         if let c = current {
-            return  lookingFor > c.element ? doFind(lookingFor, current: c.rightChild, parent: current):
-                    lookingFor < c.element ? doFind(lookingFor, current: c.leftChild,  parent: current):
+            return  lookingFor > c.element ? doFind(lookingFor: lookingFor, current: c.rightChild, parent: current):
+            lookingFor < c.element ? doFind(lookingFor: lookingFor, current: c.leftChild,  parent: current):
                     /* == */                 (c, parent)
         }
         return nil
@@ -179,13 +184,13 @@ class StringTreeWithRemove
         /// reference until it finds a nil leftChild. Then it inserts the insertNode
         /// in place of the nil.
 
-        private func fillFirstAvailableSlotOn(inThisDirection: Direction, with insertThis: Node?) {
+        fileprivate func fillFirstAvailableSlotOn(inThisDirection: Direction, with insertThis: Node?) {
             switch (inThisDirection) {
             case (.Left ) where leftChild  == nil : leftChild  = insertThis
             case (.Right) where rightChild == nil : rightChild = insertThis
                 
-            case (.Left ): leftChild! .fillFirstAvailableSlotOn( .Left,  with: insertThis )
-            case (.Right): rightChild!.fillFirstAvailableSlotOn( .Right, with: insertThis )
+            case (.Left ): leftChild! .fillFirstAvailableSlotOn(inThisDirection: .Left,  with: insertThis)
+            case (.Right): rightChild!.fillFirstAvailableSlotOn(inThisDirection: .Right, with: insertThis)
             }
         }
     }

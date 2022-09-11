@@ -3,6 +3,10 @@
 //  StringTreeWithVerify.swift
 //  Copyright © 2015 Allen Holub. All rights reserved.
 
+/* Allen Holub's Pluralsite Swift 2.x code Sept 2015 converted to Swift 5.1 by hand
+ * by Michael MacFaden Sept 2022.
+ */
+
 import Foundation
 
 class StringTreeWithClosures
@@ -14,11 +18,11 @@ class StringTreeWithClosures
     var  count:  Int  { return size }
 
     //----------------------------------------------------------------------
-    enum Error : ErrorType { case Empty }    // used by remove()
+    enum Error : Swift.Error { case Empty }    // used by remove()
 
     //----------------------------------------------------------------------
     func _verifyChildren( parent: T, left: T?, right: T? ) -> Bool {
-        guard let (found, _) = doFind(parent, current:root, parent:nil)
+        guard let (found, _) = doFind(lookingFor: parent, current:root, parent:nil)
         else { return false }
 
         switch (found.leftChild, found.rightChild ) {
@@ -42,8 +46,9 @@ class StringTreeWithClosures
     // var t = StringTree( ["a", "b", "c"] )
     //
     init ( _ elements: [T] )
-    {   for element in elements {
-            add(element)
+    {
+        for element in elements {
+            _ = add(element: element)
         }
     }
 
@@ -58,8 +63,7 @@ class StringTreeWithClosures
         }
         else {
             var current = root!;
-            for ;;
-            {
+            while true {
                 if element > current.element { // go right
                     if current.rightChild == nil {
                         current.rightChild = Node(element)
@@ -83,7 +87,7 @@ class StringTreeWithClosures
                 }
             }
         }
-        ++size
+        size += 1
         return true
     }
 
@@ -92,18 +96,18 @@ class StringTreeWithClosures
     
     func remove( lookingFor: T ) throws -> T? {
         
-        if let (target, parent) = doFind(lookingFor, current:root, parent:nil) {
+        if let (target, parent) = doFind(lookingFor: lookingFor, current:root, parent:nil) {
             
             let orphanedSubtree = target.leftChild
-            let targetSide      = target.isOnSideOf(parent)
+            let targetSide = target.isOnSideOf(parent: parent)
             
             if( target.rightChild == nil ) {
-                replaceChildOf( parent, on: targetSide, with: orphanedSubtree );
+                replaceChildOf(parent: parent, on: targetSide, with: orphanedSubtree);
             } else {
-                target.rightChild!.fillFirstAvailableSlotOn(.Left, with: orphanedSubtree)
-                replaceChildOf( parent, on: targetSide, with: target.rightChild );
+                target.rightChild!.fillFirstAvailableSlotOn(inThisDirection: .Left, with: orphanedSubtree)
+                replaceChildOf(parent: parent, on: targetSide, with: target.rightChild );
             }
-            --size
+            size -= 1
             return target.element
         }
 
@@ -145,14 +149,14 @@ class StringTreeWithClosures
     /// found node and its parent (see doFind()).
     
     func findMatchOf( lookingFor: T ) -> T? {
-        if let (found, _) = doFind(lookingFor, current:root, parent:nil) {
+        if let (found, _) = doFind(lookingFor: lookingFor, current:root, parent:nil) {
             return found.element
         }
         return nil
     }
     
     func contains( lookingFor: T ) -> Bool {
-        return findMatchOf( lookingFor ) != nil
+        return findMatchOf(lookingFor: lookingFor) != nil
     }
     //----------------------------------------------------------------------
     /// The workhorse method used by both findMatchOf and remove.
@@ -165,8 +169,8 @@ class StringTreeWithClosures
     func doFind( lookingFor: T, current: Node?, parent: Node? ) -> (found: Node, parent: Node?)?
     {
         if let c = current {
-            return  lookingFor > c.element ? doFind(lookingFor, current: c.rightChild, parent: current):
-                    lookingFor < c.element ? doFind(lookingFor, current: c.leftChild,  parent: current):
+            return  lookingFor > c.element ? doFind(lookingFor: lookingFor, current: c.rightChild, parent: current):
+            lookingFor < c.element ? doFind(lookingFor: lookingFor, current: c.leftChild,  parent: current):
                     /* == */                 (c, parent)
         }
         return nil
@@ -174,10 +178,11 @@ class StringTreeWithClosures
     //----------------------------------------------------------------------
 
     func traverse( direction: Ordering, visit: (T)->Bool )
-    {   switch( direction ) {
-        case .Inorder:   traverseIn  ( root, visit )
-        case .Preorder:  traversePre ( root, visit )
-        case .Postorder: traversePost( root, visit )
+    {
+        switch( direction ) {
+            case .Inorder:  _ = traverseIn(current: root, visit )
+            case .Preorder: _ =  traversePre(current: root, visit )
+            case .Postorder: _ = traversePost(current: root, visit )
         }
     }
 
@@ -185,11 +190,11 @@ class StringTreeWithClosures
     // by defaulting the first argument, unfortunately.
 
     func traverse( iterator: (T)->Bool   ) {
-        return traverse( .Inorder, visit: iterator )
+        return traverse(direction: .Inorder, visit: iterator )
     }
 
     func forEveryElement( iterator: (T)->()   ) {
-        return traverse( .Inorder, visit: { iterator($0); return true } )
+        return traverse(direction: .Inorder, visit: { iterator($0); return true } )
     }
 
     func printAll () {
@@ -198,36 +203,55 @@ class StringTreeWithClosures
     
     private func traverseIn(current: Node?, _ visit: (T)->Bool) -> Bool {
         if let c = current {
-            if !traverseIn ( c.leftChild, visit  ){ return false }
-            if !visit      ( c.element           ){ return false }
-            if !traverseIn ( c.rightChild, visit ){ return false }
+            if !traverseIn(current: c.leftChild, visit) {
+                return false
+            }
+            if !visit(c.element) {
+                return false
+            }
+            if !traverseIn(current: c.rightChild, visit) {
+                return false
+            }
         }
         return true;
     }
     
     private func traversePost( current: Node?, _ visit: (T)->Bool) -> Bool {
         if let c = current {
-            if !traversePost ( c.leftChild, visit  ){ return false }
-            if !traversePost ( c.rightChild, visit ){ return false }
-            if !visit        ( c.element           ){ return false }
+            if !traversePost(current: c.leftChild, visit) {
+                return false
+                
+            }
+            if !traversePost(current: c.rightChild, visit) {
+                return false
+            }
+            if !visit( c.element) {
+                return false
+            }
         }
         return true;
     }
     
     private func traversePre( current: Node?, _ visit: (T)->Bool) -> Bool {
         if let c = current {
-            if !visit       ( c.element           ){ return false }
-            if !traversePre ( c.leftChild, visit  ){ return false }
-            if !traversePre ( c.rightChild, visit ){ return false }
+            if !visit(c.element) {
+                return false
+            }
+            if !traversePre(current: c.leftChild, visit ) {
+                return false
+            }
+            if !traversePre(current: c.rightChild, visit) {
+                return false
+            }
         }
         return true;
     }
-    //----------------------------------------------------------------------
+    
     func filter( okay: (T)->Bool ) -> Tree<T> {
         let result: Tree<T> = [];
         forEveryElement {
             if(okay($0)) {
-                result.add($0)
+                result.add(element: $0)
             }
         }
         return result
@@ -236,7 +260,7 @@ class StringTreeWithClosures
     func map( transform: (T)->T ) -> Tree<T> {
         let result: Tree<T> = [];
         forEveryElement {
-            result.add( transform($0) )
+            result.add(element: transform($0) )
         }
         return result
     }
@@ -251,7 +275,7 @@ class StringTreeWithClosures
     //----------------------------------------------------------------------
     /// Convert to a String using the indicated delimiter between elements.
     func asString ( delim: String = " " ) -> String {
-        return reduce("", combine:{ return $0.characters.count == 0 ? "\($1)" : "\($0)\(delim)\($1)"})
+        return reduce(first: "", combine:{ return $0.count == 0 ? "\($1)" : "\($0)\(delim)\($1)"})
     }
 
     //======================================================================
@@ -280,13 +304,13 @@ class StringTreeWithClosures
         /// reference until it finds a nil leftChild. Then it inserts the insertNode
         /// in place of the nil.
 
-        private func fillFirstAvailableSlotOn(inThisDirection: Direction, with insertThis: Node?) {
+        fileprivate func fillFirstAvailableSlotOn(inThisDirection: Direction, with insertThis: Node?) {
             switch (inThisDirection) {
             case (.Left ) where leftChild  == nil : leftChild  = insertThis
             case (.Right) where rightChild == nil : rightChild = insertThis
                 
-            case (.Left ): leftChild! .fillFirstAvailableSlotOn( .Left,  with: insertThis )
-            case (.Right): rightChild!.fillFirstAvailableSlotOn( .Right, with: insertThis )
+            case (.Left ): leftChild! .fillFirstAvailableSlotOn(inThisDirection: .Left,  with: insertThis )
+            case (.Right): rightChild!.fillFirstAvailableSlotOn(inThisDirection: .Right, with: insertThis )
             }
         }
     }

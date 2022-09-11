@@ -304,11 +304,17 @@ func -= <T>(left: Tree<T>, right: T) {
     try! _ = left.remove(lookingFor: right)  // ignore the rvalue to silence the compiler
 }
 
+
+// was infix operator <> { associativity left precedence 130 } // same as other relational ops
+
+// Contains operator:
+///    t <> "x"  is true if t is a Tree<String> that contains "x"
 infix operator <> : LogicalConjunctionPrecedence
 func <> <T>( left: Tree<T>, right: T ) -> Bool {
     return left.contains(lookingFor: right)
 }
 
+///    t !<> "x" is true if t is a Tree<String> that doesn't contain "x"
 infix operator !<> :  LogicalConjunctionPrecedence
 func !<> <T>( left: Tree<T>, right: T ) -> Bool {
     return !left.contains(lookingFor: right)
@@ -374,13 +380,8 @@ extension Tree {
 // @TODO Remaining work for class Tree
 // https://xploden.com/swift-extending-sequencetype-for-custom-array-sorting-6dba17f36552
 // overload operarators <> and !<>
-// Contains operator:
-//    t <> "x"  is true if t is a Tree<String> that contains "x"
-//    t !<> "x" is true if t is a Tree<String> that doesn't contain "x"
 // https://swiftdoc.org/v5.1/protocol/sequence/
 // https://docs.swift.org/swift-book/ReferenceManual/Declarations.html#grammar_precedence-group-declaration
-// infix operator <> { associativity left precedence 130 } // same as other relational ops
-// infix operator !<> { associativity left precedence 130 } // same as other relational ops
 
 public class TreeGenerator<T>: IteratorProtocol {
     var current = 0;

@@ -25,36 +25,33 @@ public protocol Undoable {
 /// to store the data.
 
 public class UndoableTree<T: Comparable> : Collection, Undoable {
-
     private var data = Tree<T>()
-
-    private var undoStack: [ (undo:()->(), redo:()->()) ] = []
-    private var redoStack: [ (undo:()->(), redo:()->()) ] = []
-
+    private var undoStack: [ (undo: ()->(), redo: ()->()) ] = []
+    private var redoStack: [ (undo: ()->(), redo: ()->()) ] = []
     public var count: Int { return data.count }
 
-    public func add( element: T ) -> Bool {
-        undoStack.append(
-            ( undo:{ try! data.remove(element) },
-              redo:{      data.add   (element) } )
+    public func add(element: T) -> Bool {
+        undoStack.append((undo: {try! _ = self.data.remove(lookingFor: element)},
+                          redo: { _ = self.data.add(element: element)} )
         )
-        return data.add(element)
+        return data.add(element: element)
     }
 
     public func remove( lookingFor: T ) -> T? {
         undoStack.append(
-            ( undo:{      data.add   (lookingFor) },
-              redo:{ try! data.remove(lookingFor) } )
+            ( undo:{  _ = self.data.add(element: lookingFor) },
+              redo:{ try! _ = self.data.remove(lookingFor: lookingFor) } )
         )
-        return try! data.remove(lookingFor)
+        return try! data.remove(lookingFor: lookingFor)
     }
 
     /// Undo an add or remove. It's harmless to call this
     /// method if there's nothing to undo.
     ///
     public func undo() -> Bool {
-        if undoStack.count <= 0 { return false }
-
+        if undoStack.count <= 0 {
+            return false
+        }
         let action = undoStack.removeLast()
         action.undo()
         redoStack.append(action)
@@ -66,26 +63,27 @@ public class UndoableTree<T: Comparable> : Collection, Undoable {
     /// to redo.
 
     public func redo() -> Bool {
-        if redoStack.count <= 0 { return false }
-
+        if redoStack.count <= 0 {
+            return false
+        }
         let action = redoStack.removeLast()
         action.redo()
         undoStack.append(action)
         return true
     }
 
-    public func findMatchOf( lookingFor: T ) -> T? {
-        return data.findMatchOf(lookingFor)
+    public func findMatchOf(lookingFor: T) -> T? {
+        return data.findMatchOf(lookingFor: lookingFor)
     }
 
-    public func contains( lookingFor: T ) -> Bool {
-        return data.contains(lookingFor)
+    public func contains(lookingFor: T) -> Bool {
+        return data.contains(lookingFor: lookingFor)
     }
 
-    public func traverse( iterator: (T)->Bool ) {
-        return data.traverse(iterator)
+    public func traverse(iterator: (T)->Bool ) {
+        return data.traverse(iterator: iterator)
     }
     public func forEveryElement(iterator: (T)->()) {
-        return data.forEveryElement(iterator)
+        return data.forEveryElement(iterator: iterator)
     }
 }

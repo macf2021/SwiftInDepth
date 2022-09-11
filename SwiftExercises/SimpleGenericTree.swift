@@ -1,6 +1,10 @@
 import Cocoa
 import Foundation
 
+/* Allen Holub's Pluralsite Swift 2.x code Sept 2015 converted to Swift 5.1 by hand
+ * by Michael MacFaden Sept 2022.
+ */
+
 //======================================================================
 // Can't nest enums in a generic type!
 
@@ -41,14 +45,14 @@ public class SimpleGenericTree<T: Comparable> : Collection  {
     ///
     public init ( _ elements: [T] )
     {   for element in elements {
-            add(element)
+        _ = add(element: element)
         }
     }
 
     //----------------------------------------------------------------------
     /// Convert to a String using the indicated delimiter between elements.
     public func asString ( delim: String = " " ) -> String {
-        return reduce("", combine:{ return $0.characters.count == 0 ? "\($1)" : "\($0)\(delim)\($1)"})
+        return reduce(first: "", combine:{ return $0.count == 0 ? "\($1)" : "\($0)\(delim)\($1)"})
     }
     
     //----------------------------------------------------------------------
@@ -61,8 +65,7 @@ public class SimpleGenericTree<T: Comparable> : Collection  {
         }
         else {
             var current = root!;
-            for ;;
-            {
+            while true {
                 if element > current.element { // go right
                     if current.rightChild == nil {
                         current.rightChild = Node(element)
@@ -86,7 +89,7 @@ public class SimpleGenericTree<T: Comparable> : Collection  {
                 }
             }
         }
-        ++size
+        size += 1
         arrayVersion = nil; // force a rebild the next time it's needed
         return true
     }
@@ -96,20 +99,20 @@ public class SimpleGenericTree<T: Comparable> : Collection  {
     
     public func remove( lookingFor: T ) throws -> T? {
         
-        if let (target, parent) = doFind(lookingFor, current:root, parent:nil) {
+        if let (target, parent) = doFind(lookingFor: lookingFor, current:root, parent:nil) {
             
             let orphanedSubtree = target.leftChild
-            let targetSide      = target.isOnSideOf(parent)
+            let targetSide = target.isOnSideOf(parent: parent)
             
             if( target.rightChild == nil ) {
-                replaceChildOf( parent, on: targetSide, with: orphanedSubtree );
+                replaceChildOf(parent: parent, on: targetSide, with: orphanedSubtree );
             } else {
-                target.rightChild!.fillFirstAvailableSlotOn(.Left, with: orphanedSubtree)
-                replaceChildOf( parent, on: targetSide, with: target.rightChild );
+                target.rightChild!.fillFirstAvailableSlotOn(inThisDirection: .Left, with: orphanedSubtree)
+                replaceChildOf(parent: parent, on: targetSide, with: target.rightChild );
             }
             arrayVersion = nil; // force a rebild the next time it's needed
 
-            --size
+            size -= 1
             return target.element
         }
         throw TreeError.Empty
@@ -150,14 +153,14 @@ public class SimpleGenericTree<T: Comparable> : Collection  {
     /// found node and its parent (see doFind()).
     
     public func findMatchOf( lookingFor: T ) -> T? {
-        if let (found, _) = doFind(lookingFor, current:root, parent:nil) {
+        if let (found, _) = doFind(lookingFor: lookingFor, current:root, parent:nil) {
             return found.element
         }
         return nil
     }
     
     public func contains( lookingFor: T ) -> Bool {
-        return findMatchOf( lookingFor ) != nil
+        return findMatchOf(lookingFor: lookingFor ) != nil
     }
     //----------------------------------------------------------------------
     /// The workhorse method used by both findMatchOf and remove.
@@ -171,19 +174,22 @@ public class SimpleGenericTree<T: Comparable> : Collection  {
                                                     (found: Node<T>, parent: Node<T>?)?
     {
         if let c = current {
-            return  lookingFor > c.element ? doFind(lookingFor, current: c.rightChild, parent: current):
-                    lookingFor < c.element ? doFind(lookingFor, current: c.leftChild,  parent: current):
+            return  lookingFor > c.element ? doFind(lookingFor: lookingFor, current: c.rightChild, parent: current):
+            lookingFor < c.element ? doFind(lookingFor: lookingFor, current: c.leftChild,  parent: current):
                     /* == */                 (c, parent)
         }
         return nil
     }
     //----------------------------------------------------------------------
 
-    public func traverse( direction: Ordering, visit: (T)->Bool )
-    {   switch( direction ) {
-        case .Inorder:   traverseIn  ( root, visit )
-        case .Preorder:  traversePre ( root, visit )
-        case .Postorder: traversePost( root, visit )
+    public func traverse( direction: Ordering, visit: (T)->Bool ) {
+        switch( direction ) {
+            case .Inorder:
+            _ = traverseIn(current: root, visit )
+            case .Preorder:
+            _ = traversePre(current: root, visit )
+            case .Postorder:
+             _ = traversePost(current: root, visit )
         }
     }
 
@@ -191,11 +197,11 @@ public class SimpleGenericTree<T: Comparable> : Collection  {
     // by defaulting the first argument, unfortunately.
 
     public func traverse( iterator: (T)->Bool   ) {
-        return traverse( .Inorder, visit: iterator )
+        return traverse(direction: .Inorder, visit: iterator )
     }
 
     public func forEveryElement( iterator: (T)->()   ) {
-        return traverse( .Inorder, visit: { iterator($0); return true } )
+        return traverse(direction: .Inorder, visit: { iterator($0); return true } )
     }
 
     public func printAll () {
@@ -204,27 +210,46 @@ public class SimpleGenericTree<T: Comparable> : Collection  {
     
     private func traverseIn(current: Node<T>?, _ visit: (T)->Bool) -> Bool {
         if let c = current {
-            if !traverseIn ( c.leftChild, visit  ){ return false }
-            if !visit      ( c.element           ){ return false }
-            if !traverseIn ( c.rightChild, visit ){ return false }
+            if !traverseIn(current: c.leftChild, visit) {
+                return false
+            }
+            if !visit(c.element) {
+                return false
+            }
+            if !traverseIn(current: c.rightChild, visit) {
+                return false
+            }
         }
         return true;
     }
     
     private func traversePost( current: Node<T>?, _ visit: (T)->Bool) -> Bool {
         if let c = current {
-            if !traversePost ( c.leftChild, visit  ){ return false }
-            if !traversePost ( c.rightChild, visit ){ return false }
-            if !visit        ( c.element           ){ return false }
+            if !traversePost(current: c.leftChild, visit) {
+                return false
+                
+            }
+            if !traversePost(current: c.rightChild, visit) {
+                return false
+            }
+            if !visit( c.element) {
+                return false
+            }
         }
         return true;
     }
     
     private func traversePre( current: Node<T>?, _ visit: (T)->Bool) -> Bool {
         if let c = current {
-            if !visit       ( c.element           ){ return false }
-            if !traversePre ( c.leftChild, visit  ){ return false }
-            if !traversePre ( c.rightChild, visit ){ return false }
+            if !visit(c.element) {
+                return false
+            }
+            if !traversePre(current: c.leftChild, visit) {
+                return false
+            }
+            if !traversePre(current: c.rightChild, visit) {
+                return false
+            }
         }
         return true;
     }
@@ -233,7 +258,7 @@ public class SimpleGenericTree<T: Comparable> : Collection  {
     // Test methods (internal access)
 
     func _verifyChildren( parent: T, left: T?, right: T? ) -> Bool {
-        guard let (found, _) = doFind(parent, current:root, parent:nil)
+        guard let (found, _) = doFind(lookingFor: parent, current:root, parent:nil)
         else { return false }
 
         switch (found.leftChild, found.rightChild ) {
@@ -278,13 +303,13 @@ private class Node<T> {
     /// reference until it finds a nil leftChild. Then it inserts the insertNode
     /// in place of the nil.
 
-    private func fillFirstAvailableSlotOn(inThisDirection: Direction, with insertThis: Node<T>?) {
+    fileprivate func fillFirstAvailableSlotOn(inThisDirection: Direction, with insertThis: Node<T>?) {
         switch (inThisDirection) {
         case (.Left ) where leftChild  == nil : leftChild  = insertThis
         case (.Right) where rightChild == nil : rightChild = insertThis
             
-        case (.Left ): leftChild! .fillFirstAvailableSlotOn( .Left,  with: insertThis )
-        case (.Right): rightChild!.fillFirstAvailableSlotOn( .Right, with: insertThis )
+        case (.Left ): leftChild! .fillFirstAvailableSlotOn(inThisDirection: .Left,  with: insertThis )
+        case (.Right): rightChild!.fillFirstAvailableSlotOn(inThisDirection: .Right, with: insertThis )
         }
     }
 }
@@ -294,7 +319,7 @@ extension SimpleGenericTree {
         let result: Tree<T> = [];
         forEveryElement {
             if(okay($0)) {
-                result.add($0)
+                result.add(element: $0)
             }
         }
         return result
@@ -303,7 +328,7 @@ extension SimpleGenericTree {
     public func map( transform: (T)->T ) -> Tree<T> {
         let result: Tree<T> = [];
         forEveryElement {
-            result.add( transform($0) )
+            result.add(element: transform($0) )
         }
         return result
     }

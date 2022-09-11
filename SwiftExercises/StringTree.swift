@@ -1,6 +1,10 @@
 import Cocoa
 import Foundation
 
+/* Allen Holub's Pluralsite Swift 2.x code Sept 2015 converted to Swift 5.1 by hand
+ * by Michael MacFaden Sept 2022.
+ */
+
 class StringTree
 {
     typealias T = String
@@ -8,26 +12,25 @@ class StringTree
     private var root:   Node?
     private var size:   Int = 0;
     var  count:  Int  { return size }
-
-
-    //----------------------------------------------------------------------
     var  isEmpty: Bool { return root == nil; }
-    //----------------------------------------------------------------------
+
     func clear() {
         root = nil
         size = 0
     }
+
     //----------------------------------------------------------------------
     // Initialize from an array. e.g.
     // var t = StringTree( ["a", "b", "c"] )
     //
     init ( _ elements: [T] )
     {   for element in elements {
-            add(element)
+        _ = add(element: element)
         }
     }
 
     init (){} // nothing to do, but it's shadowed by init([T])
+   
     //----------------------------------------------------------------------
     /// Add a new element. Return false (and do nothing) if the element
     /// is already there
@@ -38,8 +41,7 @@ class StringTree
         }
         else {
             var current = root!;
-            for ;;
-            {
+            while true {
                 if element > current.element { // go right
                     if current.rightChild == nil {
                         current.rightChild = Node(element)
@@ -63,9 +65,10 @@ class StringTree
                 }
             }
         }
-        ++size
+        size += 1
         return true
     }
+    
     //----------------------------------------------------------------------
     func smallest() -> T? {
         var current = root
@@ -74,6 +77,7 @@ class StringTree
         }
         return current?.element
     }
+    
     //----------------------------------------------------------------------
     func largest() -> T? {
         var current = root
@@ -82,21 +86,23 @@ class StringTree
         }
         return current?.element
     }
+    
     //----------------------------------------------------------------------
     /// Return the element that matches (==) lookingFor or nil if you can't find it.
     /// Returns a tuple holding optional references to both the
     /// found node and its parent (see doFind()).
     
     func findMatchOf( lookingFor: T ) -> T? {
-        if let (found, _) = doFind(lookingFor, current:root, parent:nil) {
+        if let (found, _) = doFind(lookingFor: lookingFor, current:root, parent:nil) {
             return found.element
         }
         return nil
     }
     
     func contains( lookingFor: T ) -> Bool {
-        return findMatchOf( lookingFor ) != nil
+        return findMatchOf(lookingFor: lookingFor ) != nil
     }
+    
     //----------------------------------------------------------------------
     /// The workhorse method used by both findMatchOf and remove.
     /// When you find something, all you need is the node you're looking for, but when you're
@@ -108,14 +114,13 @@ class StringTree
     func doFind( lookingFor: T, current: Node?, parent: Node? ) -> (found: Node, parent: Node?)?
     {
         if let c = current {
-            return  lookingFor > c.element ? doFind(lookingFor, current: c.rightChild, parent: current):
-                    lookingFor < c.element ? doFind(lookingFor, current: c.leftChild,  parent: current):
+            return  lookingFor > c.element ? doFind(lookingFor: lookingFor, current: c.rightChild, parent: current):
+            lookingFor < c.element ? doFind(lookingFor: lookingFor, current: c.leftChild,  parent: current):
                     /* == */                 (c, parent)
         }
         return nil
     }
 
-    //======================================================================
 
     class Node {
         var rightChild: Node?

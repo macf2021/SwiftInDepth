@@ -1,5 +1,9 @@
 import Foundation
 
+/* Allen Holub's Pluralsite Swift 2.x code Sept 2015 converted to Swift 5.1 by hand
+ * by Michael MacFaden Sept 2022.
+ */
+
 //======================================================================
 /// The safe tree adds the ability to lock a node when it's inserted in
 /// the tree and unlock it when it's removed. A locked node, once locked,
@@ -21,16 +25,20 @@ import Foundation
 /// current class. Be careful. See the UndoableTree for a way around this
 /// problem.
 
+/* Allen Holub's Pluralsite Swift 2.x code Sept 2015 converted to Swift 5.1 by hand
+ * by Michael MacFaden Sept 2022.
+ */
+
 public protocol Lockable {
     func lock   ()->()
     func unlock ()->()
 }
 
-public enum LockedObjectException : ErrorType {
+public enum LockedObjectException : Swift.Error {
     case ObjectLocked
 }
-
-public class SafeTree<T where T:Lockable, T:Comparable > : Tree<T>
+//
+public class SafeTree<T>: Tree<T> where T:Lockable, T:Comparable
 {
     public required init( arrayLiteral elements: T...) {
         super.init(elements)
@@ -42,11 +50,11 @@ public class SafeTree<T where T:Lockable, T:Comparable > : Tree<T>
     
     public override func add( element: T        ) -> Bool {
         element.lock()
-        return super.add(element)
+        return super.add(element: element)
     }
     
     public override func remove( lookingFor: T  ) throws -> T? {
-        let found = try! super.remove(lookingFor)
+        let found = try! super.remove(lookingFor: lookingFor)
         if found != nil {
             found?.unlock()
         }

@@ -1,10 +1,14 @@
 //  Collection.swift
 //  Copyright © 2015 Allen Holub. All rights reserved.
 
+/* Allen Holub's Pluralsite Swift 2.x code Sept 2015 converted to Swift 5.1 by hand
+ * by Michael MacFaden Sept 2022.
+ */
+
 import Foundation
 
 /// Note that both add and findMatchOf are risky because they add (and give access to) the
-/// object that's used as the "key," which could be a reference objecgt. If you modify
+/// object that's used as the "key," which could be a reference object. If you modify
 /// that object, you'll break the tree. It would be better to use (and return) a copy.
 /// Since swift classes do not extend a universal base class (e.g. Object), there's no
 /// way to programmatically determine if something is a value type or a reference type
@@ -16,16 +20,16 @@ import Foundation
 //  so you'll loose type safety.
 
 public protocol Collection {
-    typealias T
-
+   // typealias T
+    associatedtype T
     var count: Int { get }
     
     /// Add an element to the tree. If it's a reference object, it's dangerous to keep
     /// the element around after it's been added. If T adopts Lockable, then the
     /// item is locked when it's added and unlocked when it's removed.
     
-    func add( element: T        ) -> Bool
-    func remove( lookingFor: T  ) throws -> T?
+    func add(element: T) -> Bool
+    func remove(lookingFor: T) throws -> T?
     
     /// Find a matching element (using Comparable overrides) and return it.
     /// Since this method makes it possible for someone to destroy the
@@ -35,8 +39,8 @@ public protocol Collection {
     /// safer. You don't have to worry about any of this if the element
     /// is Lockable.
     
-    func findMatchOf     ( lookingFor: T         ) -> T?
-    func contains        ( lookingFor: T         ) -> Bool
-    func traverse        ( iterator: (T)->Bool   )
-    func forEveryElement ( iterator: (T)->()     )
+    func findMatchOf(lookingFor: T) -> T?
+    func contains(lookingFor: T) -> Bool
+    func traverse(iterator: (T)->Bool)
+    func forEveryElement(iterator: (T)->())
 }

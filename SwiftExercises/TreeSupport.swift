@@ -8,5 +8,5 @@
 
 public enum Ordering { case Inorder, Postorder, Preorder }
 public enum Direction{ case Left, Right }
-public enum TreeError : ErrorType { case Empty }    // used by remove()
+public enum TreeError : Error { case Empty }    // used by remove()
 
