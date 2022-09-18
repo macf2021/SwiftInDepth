@@ -75,8 +75,8 @@ public enum Country: String {
         }
         var i = -1;
         for current in template {
-            print("comparing template(\(current)) to candidate(\(candidate[i]))" )
             i += 1
+            print("comparing template(\(current)) to candidate(\(candidate[i]))" )
             switch (current, candidate[i]) {
                 case (" ", let c) where " " ~= c        : continue
                 case ("d", let c) where "0"..."9" ~=  c : continue

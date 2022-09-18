@@ -34,7 +34,7 @@ class PostalCodeTests: XCTestCase {
         default: break
         }
 
-        switch( Country.can.getPostalCode(value: "A0A 0A0")! ) {
+        switch(Country.can.getPostalCode(value: "A0A 0A0")!) {
         case .can("A0A 0A0"): break
         default: XCTFail()
         }
