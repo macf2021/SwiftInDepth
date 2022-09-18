@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "11A269FA-FE18-403D-B456-06B65F8EF5FD",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:SwiftExercises.xcodeproj",
+        "identifier" : "9F1CB5501BB0C6CF00CC50A7",
+        "name" : "SwiftExercisesTests"
+      }
+    }
+  ],
+  "version" : 1
+}

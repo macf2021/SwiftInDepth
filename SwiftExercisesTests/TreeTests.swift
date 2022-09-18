@@ -2,6 +2,10 @@
 //  Copyright © 2015 Allen Holub. All rights reserved.
 //
 
+/* Allen Holub's Pluralsite Swift 2.x code Sept 2015 converted to Swift 5.1 by hand
+ * by Michael MacFaden Sept 2022.
+ */
+
 import XCTest
 @testable import SwiftExercises
 
@@ -15,80 +19,80 @@ class TreeTests: XCTestCase {
     }
 
     func testTreeStructure() {
-        XCTAssertTrue( t._verifyChildren("d", left: "b", right: "f") )
-        XCTAssertTrue( t._verifyChildren("b", left: "a", right: "c") )
-        XCTAssertTrue( t._verifyChildren("f", left: "e", right: "g") )
-        XCTAssertTrue( t._verifyChildren("a", left: nil, right: nil) )
-        XCTAssertTrue( t._verifyChildren("c", left: nil, right: nil) )
-        XCTAssertTrue( t._verifyChildren("e", left: nil, right: nil) )
-        XCTAssertTrue( t._verifyChildren("g", left: nil, right: nil) )
+        XCTAssertTrue(t._verifyChildren(parent: "d", left: "b", right: "f"))
+        XCTAssertTrue(t._verifyChildren(parent: "b", left: "a", right: "c"))
+        XCTAssertTrue(t._verifyChildren(parent: "f", left: "e", right: "g"))
+        XCTAssertTrue(t._verifyChildren(parent: "a", left: nil, right: nil))
+        XCTAssertTrue(t._verifyChildren(parent: "c", left: nil, right: nil))
+        XCTAssertTrue(t._verifyChildren(parent: "e", left: nil, right: nil))
+        XCTAssertTrue(t._verifyChildren(parent: "g", left: nil, right: nil))
 
-        t.add("h")
+        _ = t.add(element: "h")
 
-        XCTAssertTrue( t._verifyChildren("d", left: "b", right: "f") )
-        XCTAssertTrue( t._verifyChildren("b", left: "a", right: "c") )
-        XCTAssertTrue( t._verifyChildren("f", left: "e", right: "g") )
-        XCTAssertTrue( t._verifyChildren("a", left: nil, right: nil) )
-        XCTAssertTrue( t._verifyChildren("c", left: nil, right: nil) )
-        XCTAssertTrue( t._verifyChildren("e", left: nil, right: nil) )
-        XCTAssertTrue( t._verifyChildren("g", left: nil, right: "h") )
-        XCTAssertTrue( t._verifyChildren("h", left: nil, right: nil) )
+        XCTAssertTrue(t._verifyChildren(parent: "d", left: "b", right: "f"))
+        XCTAssertTrue(t._verifyChildren(parent: "b", left: "a", right: "c"))
+        XCTAssertTrue(t._verifyChildren(parent: "f", left: "e", right: "g"))
+        XCTAssertTrue(t._verifyChildren(parent: "a", left: nil, right: nil))
+        XCTAssertTrue(t._verifyChildren(parent: "c", left: nil, right: nil))
+        XCTAssertTrue(t._verifyChildren(parent: "e", left: nil, right: nil))
+        XCTAssertTrue(t._verifyChildren(parent: "g", left: nil, right: "h"))
+        XCTAssertTrue(t._verifyChildren(parent: "h", left: nil, right: nil))
     }
 
     func testArrayInit() {
         let t = Tree<String>( ["a", "b", "c"] )
-        XCTAssertTrue( t.contains("a") && t.contains("b") && t.contains("c") )
+        XCTAssertTrue(t.contains(lookingFor: "a") && t.contains(lookingFor: "b") && t.contains(lookingFor: "c"))
     }
 
 
     func testZeroAndOneElement() {
         t.clear()
-        XCTAssertTrue( t.isEmpty    )
-        XCTAssertNil ( t.smallest() )
-        XCTAssertNil ( t.largest()  )
+        XCTAssertTrue(t.isEmpty)
+        XCTAssertNil (t.smallest())
+        XCTAssertNil (t.largest())
 
-        t.add( "x" );
+        _ = t.add(element: "x");
 
-        XCTAssertTrue( t.count      ==  1  )
-        XCTAssertTrue( t.smallest() == "x" )
-        XCTAssertTrue( t.largest()  == "x" )
+        XCTAssertTrue(t.count ==  1 )
+        XCTAssertTrue(t.smallest() == "x")
+        XCTAssertTrue(t.largest() == "x")
     }
 
     func testContains() {
-        XCTAssertTrue ( t.contains("a") )
-        XCTAssertTrue ( t.contains("b") )
-        XCTAssertTrue ( t.contains("c") )
-        XCTAssertTrue ( t.contains("d") )
-        XCTAssertTrue ( t.contains("e") )
-        XCTAssertTrue ( t.contains("f") )
-        XCTAssertTrue ( t.contains("g") )
-        XCTAssertFalse( t.contains("h") )
+        XCTAssertTrue (t.contains(lookingFor: "a"))
+        XCTAssertTrue (t.contains(lookingFor: "b"))
+        XCTAssertTrue (t.contains(lookingFor: "c"))
+        XCTAssertTrue (t.contains(lookingFor: "d"))
+        XCTAssertTrue (t.contains(lookingFor: "e"))
+        XCTAssertTrue (t.contains(lookingFor: "f"))
+        XCTAssertTrue (t.contains(lookingFor: "g"))
+        XCTAssertFalse(t.contains(lookingFor: "h"))
     }
 
     func testFindMatchOf() {
-        XCTAssertTrue ( t.findMatchOf("a") == "a" )
-        XCTAssertTrue ( t.findMatchOf("b") == "b" )
-        XCTAssertTrue ( t.findMatchOf("c") == "c" )
-        XCTAssertTrue ( t.findMatchOf("d") == "d" )
-        XCTAssertTrue ( t.findMatchOf("e") == "e" )
-        XCTAssertTrue ( t.findMatchOf("f") == "f" )
-        XCTAssertTrue ( t.findMatchOf("g") == "g" )
-        XCTAssertNil  ( t.findMatchOf("h") )
+        XCTAssertTrue(t.findMatchOf(lookingFor: "a") == "a")
+        XCTAssertTrue(t.findMatchOf(lookingFor: "b") == "b")
+        XCTAssertTrue(t.findMatchOf(lookingFor: "c") == "c")
+        XCTAssertTrue(t.findMatchOf(lookingFor: "d") == "d")
+        XCTAssertTrue(t.findMatchOf(lookingFor: "e") == "e")
+        XCTAssertTrue(t.findMatchOf(lookingFor: "f") == "f")
+        XCTAssertTrue(t.findMatchOf(lookingFor: "g") == "g")
+        XCTAssertNil(t.findMatchOf(lookingFor: "h"))
     }
 
     func testRemove() {
-        try! t.remove("c");
-        try! t.remove("b");
-        try! t.remove("e");
-        try! t.remove("f");
-        try! t.remove("d");
+        try! _ = t.remove(lookingFor: "c");
+        try! _ = t.remove(lookingFor: "b");
+        try! _ = t.remove(lookingFor: "e");
+        try! _ = t.remove(lookingFor: "f");
+        try! _ = t.remove(lookingFor: "d");
 
-        XCTAssertTrue( t.count == 2 )
-        XCTAssertTrue( t.contains("a") )
-        XCTAssertTrue( t.contains("g") )
+        XCTAssertTrue(t.count == 2)
+        XCTAssertTrue(t.contains("a"))
+        XCTAssertTrue(t.contains("g"))
 
         do {
-            try t.remove("xxxx")
+            try _ = t.remove(lookingFor: "xxxx")
             XCTFail()
         }
         catch TreeError.Empty {}
@@ -96,7 +100,7 @@ class TreeTests: XCTestCase {
 
         do {
             t.clear()
-            try t.remove("xxxx")
+            try _ = t.remove(lookingFor: "xxxx")
             XCTFail()
         }
         catch TreeError.Empty {}
@@ -108,20 +112,20 @@ class TreeTests: XCTestCase {
         t += "b"
         t += "a"
         t += "c"
-        XCTAssertEqual(t.asString(","), "a,b,c" )
+        XCTAssertEqual(t.asString(delim: ","), "a,b,c")
     }
 
     func testTraversal() {
         var s = ""
-        t.traverse(.Inorder){s += $0; return true}
+        t.traverse(direction: .Inorder){s += $0; return true}
         XCTAssertEqual(s, "abcdefg" )
 
         s = ""
-        t.traverse(.Preorder){s += $0; return true}
+        t.traverse(direction: .Preorder){s += $0; return true}
         XCTAssertEqual(s, "dbacfeg")
 
         s = ""
-        t.traverse(.Postorder){s += $0; return true}
+        t.traverse(direction: .Postorder){s += $0; return true}
         XCTAssertEqual(s, "acbegfd" )
 
         s = ""
@@ -165,7 +169,7 @@ class TreeTests: XCTestCase {
 
     func testFilterMapReduce() {
         let result = t.filter{ $0 <= "d" }
-                      .map   { return $0.uppercaseString }
+                      .map   { return $0.uppercased() }
                       .reduce("-"){ $0 + $1 }
 
         XCTAssertEqual(result, "-ABCD")

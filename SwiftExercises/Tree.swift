@@ -12,7 +12,6 @@ public class Tree<T: Comparable>: ExpressibleByArrayLiteral, Collection {
     private var size:    Int = 0;
     public var  count:   Int  { return size }
 
-    //----------------------------------------------------------------------
     /// arrayVersion is used by the [] operator. [] is implemented in an
     /// extenstion, but you can declare new fields (stored properties) in
     /// extenstions. If it's nill, no array version exists, otherwise it
@@ -392,7 +391,7 @@ public class TreeGenerator<T>: IteratorProtocol {
             return nil
         }
         current += 1
-        return items[current]
+        return items[current] // index out of range error when test is run 9/16/22
     }
 }
 
@@ -401,3 +400,4 @@ extension Tree: Sequence {
        return TreeGenerator<T>(items: asArray())
     }
 }
+

@@ -9,7 +9,12 @@
     }
   ],
   "defaultOptions" : {
-    "codeCoverage" : false
+    "addressSanitizer" : {
+      "detectStackUseAfterReturn" : true,
+      "enabled" : true
+    },
+    "uiTestingScreenshotsLifetime" : "keepNever",
+    "userAttachmentLifetime" : "keepNever"
   },
   "testTargets" : [
 

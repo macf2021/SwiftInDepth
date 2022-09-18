@@ -6,11 +6,14 @@
 //  Copyright © 2015 allen. All rights reserved.
 //
 
+/* Allen Holub's Pluralsite Swift 2.x code Sept 2015 converted to Swift 5.1 by hand
+ * by Michael MacFaden Sept 2022.
+ */
+
 import XCTest
 @testable import SwiftExercises
 
 class StringTreeClosuresTests: XCTestCase {
-
     var t: StringTreeWithClosures!
 
     override func setUp() {
@@ -19,24 +22,24 @@ class StringTreeClosuresTests: XCTestCase {
     }
 
     func testFilterMapReduce() {
-        let result = t.filter{ $0 <= "d" }
-                      .map   { return $0.uppercaseString }
-                      .reduce("-"){ $0 + $1 }
+        let result = t.filter { $0 <= "d" }
+                      .map { return $0.uppercased() }
+                      .reduce("-") { $0 + $1 }
 
         XCTAssertEqual(result, "-ABCD")
     }
 
     func testTraversal() {
         var s = ""
-        t.traverse(.Inorder){s += $0; return true}
+        t.traverse(direction: .Inorder) {s += $0; return true}
         XCTAssertEqual(s, "abcdefg" )
 
         s = ""
-        t.traverse(.Preorder){s += $0; return true}
+        t.traverse(direction: .Preorder) {s += $0; return true}
         XCTAssertEqual(s, "dbacfeg")
 
         s = ""
-        t.traverse(.Postorder){s += $0; return true}
+        t.traverse(direction: .Postorder) {s += $0; return true}
         XCTAssertEqual(s, "acbegfd" )
 
         s = ""
@@ -57,7 +60,7 @@ class StringTreeClosuresTests: XCTestCase {
         t.forEveryElement{ s += $0 }
         XCTAssertEqual(s, "abcdefg" )
 
-        XCTAssertEqual(t.asString(","), "a,b,c,d,e,f,g" )
+        XCTAssertEqual(t.asString(delim: ","), "a,b,c,d,e,f,g")
     }
 
 }
