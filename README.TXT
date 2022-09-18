@@ -11,6 +11,12 @@ Exercises for Allen Holub's Pluralsight class: Swift In Depth
 	This file and all associated solutions (c)2015, Allen I. Holub.
 	All rights reserved.
 
+  17 Sept 2022
+  If you are reading this then source and test Files have been 
+  updated by hand for XCode 14 and Swift5 by Mike MacFaden.
+  and placed in this repo; https://github.com/macf2021/SwiftInDepth
+  All unit tests should pass.
+
 ======================================================================
 
 These are the same exercises that I use when I teach a hands-on version
@@ -299,7 +305,7 @@ My solution to both of the above is in:
     VeryifyAndTreeEmptyTests.swift
 
 ======================================================================
-After finishing module 5 (Functions and CLosures)
+After finishing module 5 (Functions and Closures)
 ======================================================================
 5:
 
