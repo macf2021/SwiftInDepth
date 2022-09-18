@@ -390,8 +390,9 @@ public class TreeGenerator<T>: IteratorProtocol {
         if current >= items.count {
             return nil
         }
+        let tmp = items[current]
         current += 1
-        return items[current] // index out of range error when test is run 9/16/22
+        return tmp
     }
 }
 
